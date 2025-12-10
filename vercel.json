@@ -1,0 +1,18 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "explorer.liquids.fi" }],
+      "destination": "/explorer/$1"
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "bridge.liquids.fi" }],
+      "destination": "/bridge/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
