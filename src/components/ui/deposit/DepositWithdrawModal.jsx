@@ -274,9 +274,9 @@ const DepositWithdrawModal = ({ isOpenDeposit, onClose, action }) => {
                     alt=""
                   />
                   {action === "deposit"
-                    ? walletBalances[switchToken[selectedSourceChain?.id]]
+                    ? walletBalances?.[switchToken[selectedSourceChain?.id]]
                     : action === "withdraw"
-                    ? depositBalances[switchToken[selectedSourceChain?.id]]
+                    ? depositBalances?.[switchToken?.[selectedSourceChain?.id]]
                     : "0"}{" "}
                   {values?.asset}
                 </h3>
