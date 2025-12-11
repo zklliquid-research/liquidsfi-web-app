@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Modal from "../../../common/Modal";
 import Input from "../../../common/Input";

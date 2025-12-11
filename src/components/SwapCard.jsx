@@ -2,7 +2,6 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import { ethers } from "ethers";
 import { InfoCircle, Repeat, Setting4, TickCircle } from "iconsax-react";
 import { Soroban, Horizon, Networks, StrKey } from "@stellar/stellar-sdk";
-import { toast } from "react-toastify";
 
 import { v4 as uuid } from "uuid";
 
