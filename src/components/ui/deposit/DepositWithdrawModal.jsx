@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 
 import Modal from "../../../common/Modal";
 import Input from "../../../common/Input";
@@ -154,12 +155,15 @@ const DepositWithdrawModal = ({ isOpenDeposit, onClose, action }) => {
             });
 
             const res = await awaitTransactionConfirmation(tx);
-            setMessageId(res?.transactionHash);
+            if (res) {
+              setMessageId(res?.transactionHash);
 
-            console.log("the res", res);
-            onClose();
-            setSuccessModalIsOpen(true);
+              console.log("the res", res);
+              onClose();
+              setSuccessModalIsOpen(true);
+            }
           } catch (e) {
+            toast.error(e?.message || "An error occured, Try again!");
             console.log(e);
           } finally {
             setProcessMessage("");
@@ -198,11 +202,14 @@ const DepositWithdrawModal = ({ isOpenDeposit, onClose, action }) => {
 
             const res = await sendTransactionMainnet(resSign, network?.network);
 
-            onClose();
-            setSuccessModalIsOpen(true);
+            if (res) {
+              onClose();
+              setSuccessModalIsOpen(true);
 
-            setMessageId(res?.txHash);
+              setMessageId(res?.txHash);
+            }
           } catch (e) {
+            toast.error(e?.message || "An error occured, Try again!");
             console.log(e);
           } finally {
             setProcessMessage("");

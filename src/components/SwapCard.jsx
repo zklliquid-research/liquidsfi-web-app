@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import { ethers } from "ethers";
 import { InfoCircle, Repeat, Setting4, TickCircle } from "iconsax-react";
 import { Soroban, Horizon, Networks, StrKey } from "@stellar/stellar-sdk";
+import { toast } from "react-toastify";
 
 import { v4 as uuid } from "uuid";
 
@@ -475,6 +476,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
       }
       // console.log("transfer res", res);
     } catch (e) {
+      toast.error(e?.message || "An error occured, Try again!");
       console.log(e);
     } finally {
       setIsProcessing(false);
@@ -655,6 +657,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
         setSuccessModalIsOpen(true);
       }
     } catch (e) {
+      toast.error(e?.message || "An error occured, Try again!");
       console.log(e);
     } finally {
       setIsProcessing(false);
