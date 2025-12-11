@@ -188,9 +188,22 @@ const DepositWithdrawModal = ({ isOpenDeposit, onClose, action }) => {
                 : null;
 
             setProcessMessage("submitting transaction...");
+
+            console.log("the selected source chain is", selectedSourceChain);
             const selectedNetwork = selectedSourceChain?.testnet
               ? "TESTNET"
               : "PUBLIC";
+
+            console.log(
+              "body and args",
+              userKey,
+              BASE_FEE,
+              selectedNetwork,
+              pools[selectedSourceChain?.id],
+              onchainFunction,
+              args,
+              ""
+            );
             const resSign = await anyInvokeMainnet(
               userKey,
               BASE_FEE,
@@ -201,7 +214,7 @@ const DepositWithdrawModal = ({ isOpenDeposit, onClose, action }) => {
               ""
             );
 
-            const res = await sendTransactionMainnet(resSign, network?.network);
+            const res = await sendTransactionMainnet(resSign, selectedNetwork);
 
             if (res) {
               onClose();

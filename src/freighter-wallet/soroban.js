@@ -21,6 +21,7 @@ import {
 } from "@stellar/stellar-sdk";
 import axios from "axios";
 import { WalletKitService } from "../utils/wallet-kit/services/global-service";
+import { toast } from "react-toastify";
 
 export const assetMetadata = {
   CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75: {
@@ -359,6 +360,8 @@ export async function anyInvokeMainnet(
 
     return signedTx;
   } catch (error) {
+    toast.error(error?.message);
+    console.log("the error", error?.message);
     console.error(
       "Error sending transaction:",
       error.response ? error.response.data : error.message
@@ -438,6 +441,7 @@ export async function sendTransactionMainnet(signedTx, network) {
 
     return response.data.data;
   } catch (error) {
+    toast.error(error?.message || "An error occured, Try again!");
     console.error(
       "Error sending transaction:",
       error.response ? error.response.data : error.message

@@ -210,7 +210,6 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
     }
   }, [
     userKey,
-    selectedNetwork,
     selectedSourceChain?.id,
     updateBalances,
     switchToken?.id,
@@ -300,6 +299,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
     selectedSourceChain?.id,
     selectedDestinationChain?.id,
     switchToken?.id,
+    network?.network,
   ]);
   useEffect(() => {
     async function fetchBridgeFeeEVM() {
@@ -430,6 +430,16 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
       const selectedNetwork = selectedSourceChain?.testnet
         ? "TESTNET"
         : "PUBLIC";
+
+      console.log(
+        "the whole params are",
+        userKey,
+        BASE_FEE,
+        selectedNetwork,
+        pools[selectedSourceChain?.id],
+        "bridge_to_evm",
+        args
+      );
       const resSign = await anyInvokeMainnet(
         userKey,
         BASE_FEE,
@@ -440,7 +450,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
         ""
       );
 
-      const res = await sendTransactionMainnet(resSign, network?.network);
+      const res = await sendTransactionMainnet(resSign, selectedNetwork);
 
       if (res) {
         const msgData = {
@@ -472,6 +482,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
 
         setMessageId(res?.txHash);
         setSuccessModalIsOpen(true);
+        return res;
       }
       // console.log("transfer res", res);
     } catch (e) {
@@ -557,20 +568,23 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
 
   async function handleTransferTokens() {
     try {
+      let finalRes;
       if (selectedSourceChain?.chainType === "soroban") {
-        await handleTransferFromXLM();
+        finalRes = await handleTransferFromXLM();
       } else if (selectedSourceChain?.chainType === "evm") {
         if (needApproval) {
           await handleApprove();
         }
-        await handleTransferFromEVM();
+        finalRes = await handleTransferFromEVM();
+      }
+
+      if (finalRes) {
+        setRecipientAddr("");
+        setSelectedDestinationChain(null);
+        setUpdateBalances(uuid());
       }
     } catch (e) {
       console.log(e);
-    } finally {
-      setRecipientAddr("");
-      setSelectedDestinationChain(null);
-      setUpdateBalances(uuid());
     }
   }
 
@@ -654,6 +668,8 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
 
         setMessageId(res?.transactionHash);
         setSuccessModalIsOpen(true);
+
+        return res;
       }
     } catch (e) {
       toast.error(e?.message || "An error occured, Try again!");

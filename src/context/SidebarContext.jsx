@@ -126,6 +126,9 @@ const SidebarContextProvider = ({ children }) => {
   const needConnectWallet = !selectedSourceChain;
 
   async function fetchBalanceAll(type, chain, account, token, decimals) {
+    if (!type || !chain || !account || !token || !decimals) {
+      return;
+    }
     try {
       if (!account) {
         return "0";
@@ -201,7 +204,7 @@ const SidebarContextProvider = ({ children }) => {
     }
 
     fetchDepositBalances();
-  }, [address, userKey, isOpenDeposit]);
+  }, [address, userKey, network?.network, isOpenDeposit]);
 
   useEffect(() => {
     async function fetchWalletBalances() {
@@ -233,7 +236,7 @@ const SidebarContextProvider = ({ children }) => {
     }
 
     fetchWalletBalances();
-  }, [address, userKey, isOpenDeposit]);
+  }, [address, userKey, network?.network, isOpenDeposit]);
 
   useEffect(() => {
     async function fetchBridgeBalances() {
@@ -359,6 +362,10 @@ const SidebarContextProvider = ({ children }) => {
           try {
             if (!userKey) {
               setNativeBalance("0.000");
+            }
+
+            if (!userKey || !networkSelected || !xlmToken) {
+              return;
             }
 
             const body = {

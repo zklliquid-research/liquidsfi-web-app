@@ -32,7 +32,7 @@ export default function WalletInfo({ width }) {
 
   const networkSame =
     selectedSourceChain?.chainType === "soroban"
-      ? selectedNetwork === connectedWallet
+      ? true || selectedNetwork === connectedWallet
       : true;
 
   if (
