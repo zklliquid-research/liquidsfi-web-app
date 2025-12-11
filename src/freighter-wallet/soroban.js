@@ -50,7 +50,7 @@ export async function hasTrustline(accountId, assetId) {
   }
 }
 
-export const BASE_FEE = "100";
+export const BASE_FEE = "10000000";
 
 export const STELLAR_SDK_SERVER_URL = import.meta.env.VITE_STELLAR_URL;
 
