@@ -208,6 +208,9 @@ const DepositWithdrawModal = ({ isOpenDeposit, onClose, action }) => {
               setSuccessModalIsOpen(true);
 
               setMessageId(res?.txHash);
+              onClose();
+              setSubmitting(false);
+              setProcessMessage("");
             }
           } catch (e) {
             toast.error(e?.message || "An error occured, Try again!");
@@ -216,16 +219,10 @@ const DepositWithdrawModal = ({ isOpenDeposit, onClose, action }) => {
             setProcessMessage("");
           }
         }
-
-        onClose();
-        setSubmitting(false);
-        setProcessMessage("");
       }
     } catch (error) {
+      toast.error(e?.message || "An error occured, Try again!");
       console.error("Error:", error);
-    } finally {
-      // setSubmitting(false);
-      // setProcessMessage("");
     }
   };
 
