@@ -9,7 +9,7 @@ import { SidebarContext } from "../context/SidebarContext";
 
 function TopTokensList({ transactionData }) {
   const { isConnected } = useContext(WagmiContext);
-  const { address, userKey } = useContext(SidebarContext);
+  const { address, userKey, toDateTimeMinutes } = useContext(SidebarContext);
 
   return (
     <div className="">
@@ -22,7 +22,10 @@ function TopTokensList({ transactionData }) {
       <div className="py-1 font-Roboto max-h-[754px] bg-[#191A1F] rounded-xl pb-10">
         {address || userKey ? (
           <div className=" pt-[15px] text-[18px]">
-            <TransactionHistories transactionData={transactionData} />
+            <TransactionHistories
+              transactionData={transactionData}
+              toDateTimeMinutes={toDateTimeMinutes}
+            />
           </div>
         ) : (
           <div className="text-center pt-[52px] text-[18px] px-2">

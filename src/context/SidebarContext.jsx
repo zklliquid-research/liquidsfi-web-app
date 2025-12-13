@@ -418,6 +418,18 @@ const SidebarContextProvider = ({ children }) => {
 
   const testnetIsSelected = !!selectedSourceChain?.testnet;
 
+  function toDateTimeMinutes(isoString) {
+    const d = new Date(isoString);
+
+    const yyyy = d.getUTCFullYear();
+    const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(d.getUTCDate()).padStart(2, "0");
+    const hh = String(d.getUTCHours()).padStart(2, "0");
+    const min = String(d.getUTCMinutes()).padStart(2, "0");
+
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+  }
+
   return (
     <SidebarContext.Provider
       value={{
@@ -486,6 +498,7 @@ const SidebarContextProvider = ({ children }) => {
         walletKitIsOpen,
         setWalletKitIsOpen,
         handleConnectStellarKit,
+        toDateTimeMinutes,
       }}
     >
       {children}

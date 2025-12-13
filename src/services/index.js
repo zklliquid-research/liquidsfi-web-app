@@ -36,6 +36,21 @@ export const getTransactionsHistory = async (query) => {
   return data.data;
 };
 
+export const getAllUserBridgeTransaction = async (query) => {
+  console.log("the query", query);
+  const { account, origins } = query;
+
+  console.log("the query", query);
+
+  const { data } = await axios.get(
+    `${
+      import.meta.env.VITE_BASE_URL
+    }/get-historical-transactions?limit=5&sender=${account}&origins=${origins}`
+  );
+
+  return data.data;
+};
+
 export const handleUpsertTransaction = async (data) => {
   try {
     // Send the POST request using Axios

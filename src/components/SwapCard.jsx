@@ -57,7 +57,7 @@ import { SidebarContext } from "../context/SidebarContext";
 import axios from "axios";
 import { handleUpsertTransaction } from "../services";
 
-function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
+function SwapCard({ refetch }) {
   const [recheckTrustline, setRecheckTrustline] = useState(0);
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -585,6 +585,8 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      refetch();
     }
   }
 
@@ -902,7 +904,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
             >
               Connect and Change Trustline
             </Button>
-          ) : userKey ? (
+          ) : userKey || address ? (
             isProcessing ? (
               <Button>
                 <>

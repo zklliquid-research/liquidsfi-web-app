@@ -4,19 +4,22 @@ import clsx from "clsx";
 import SwapCard from "../../components/SwapCard";
 import TopTokensList from "../../components/TopTokensList";
 import { Tab } from "@headlessui/react";
+import { pools, tokenSymbols } from "../../contracts/contracts-details.json";
 
 import { useMediaQuery } from "usehooks-ts";
 
 import { useAccount } from "wagmi";
 import TopStats from "../../common/TopStats";
 import { SidebarContext } from "../../context/SidebarContext";
+import { getAllUserBridgeTransaction } from "../../services";
+import { useQuery } from "@tanstack/react-query";
 
 function Trade() {
   const isMd = useMediaQuery("(min-width: 1024px)");
   const { chain } = useAccount();
 
   const [selectedToken] = useState(null);
-  const [transactionData, setTransactionData] = useState([]);
+  // const [transactionData, setTransactionData] = useState([]);
   const [totalRes] = useState(0);
 
   const [usdtBalance] = useState(0);
@@ -30,9 +33,10 @@ function Trade() {
     messageId,
     setMessageId,
     userKey,
-    selectedSourceChain,
+
     address,
     testnetIsSelected,
+    selectedSourceChain,
   } = useContext(SidebarContext);
 
   const [isModalOpen] = useState(false);
@@ -43,14 +47,39 @@ function Trade() {
       : selectedSourceChain?.chainType === "evm"
       ? address
       : null;
-  useEffect(() => {
-    async function getSavedTransfers(id) {
-      const dataSaved = (await JSON.parse(localStorage.getItem(id))) || [];
+  const account =
+    selectedSourceChain?.chainType === "soroban"
+      ? userKey
+      : selectedSourceChain?.chainType === "evm"
+      ? address
+      : null;
 
-      setTransactionData(() => dataSaved);
-    }
-    getSavedTransfers(dataKey);
-  }, [messageId, userKey, address, chain, isModalOpen]);
+  const {
+    data: transactionData,
+    isLoading: loadingTransactionHistory,
+    isError: errorLoadingTransactionHistory,
+    refetch,
+  } = useQuery({
+    queryKey: ["accountTxDetails", account],
+    queryFn: () =>
+      getAllUserBridgeTransaction({
+        account,
+        origins: Object.values(pools),
+      }),
+    enabled: !!account && !!pools[selectedSourceChain?.id],
+
+    refetchOnWindowFocus: true,
+    // staleTime: 1000 * 60 * 5, // 5 min cache
+  });
+
+  // useEffect(() => {
+  //   async function getSavedTransfers(id) {
+  //     const dataSaved = (await JSON.parse(localStorage.getItem(id))) || [];
+
+  //     setTransactionData(() => dataSaved);
+  //   }
+  //   getSavedTransfers(dataKey);
+  // }, [messageId, userKey, address, chain, isModalOpen]);
 
   return (
     <>
@@ -126,7 +155,10 @@ function Trade() {
         {isMd ? (
           <div className="grid items-start grid-cols-7 gap-6 pt-4">
             <div className="col-span-4 ">
-              <TopTokensList transactionData={transactionData} />
+              <TopTokensList
+                transactionData={transactionData}
+                refetch={refetch}
+              />
             </div>
             <div className="col-span-3">
               <SwapCard
@@ -136,6 +168,7 @@ function Trade() {
                 setUserKeyXLM={setUserKeyXLM}
                 setNetworkXLM={setNetworkXLM}
                 userKeyXLM={userKeyXLM}
+                refetch={refetch}
               />
             </div>
           </div>
